@@ -11,7 +11,7 @@ final project for Compiler design Course at Amirkabir University of Technology (
 ---
 
 ## How to build
-> just run this bat file.
+just run this bat file.
 ```
 win-make-vs2019.bat
 ```
@@ -22,6 +22,7 @@ win-make-vs2019.bat
 output code is in __C__, and has to compile with __GCC__.
 you can find more examples [here.](https://github.com/AminAliari/Compiler/tree/master/Compiler/inputs)
 
+__input__:
 ```java
 class Program
 {
@@ -71,8 +72,8 @@ class Program
 	}
 }
 ```
-
-output
+---
+__output__:
 ```c
 #include <stdio.h>
 #include <stdlib.h>
