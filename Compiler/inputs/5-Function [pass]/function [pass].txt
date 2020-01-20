@@ -1,0 +1,30 @@
+class Program{
+	static void _main(){
+		int n;
+		
+		n = f_1(f_2(1, 2, 3), 4);
+		
+		n = f_3();
+		
+		print("{n}");
+	}
+	
+	static int f_1(int a, int b){
+		print("{a}");
+		print("{b}");
+
+		return 0;
+	}
+	
+	static int f_2(int a, int b, int c){
+		print("{c}");
+		
+		return 0;
+	}
+	
+	static int f_3(){
+		print("{2.3}");
+		
+		return 0;
+	}
+}

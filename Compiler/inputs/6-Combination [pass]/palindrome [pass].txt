@@ -1,0 +1,46 @@
+class Program{
+	static void _main()
+	{
+		int num = 0;
+
+		num = 5523;
+		num = getPalindrome(num);
+	
+		print("{num}");
+	}
+	
+	static int getPalindrome(int num)
+	{
+		int pal = 0;
+		pal = 0;
+		
+		while(num >= 1)
+		{
+			int units;
+			units = getUnit(num);
+			pal = pal * 10 + units;
+			num = (num - units) / 10;
+		}
+		
+		return pal;
+	}
+
+	static int getUnit(int num)
+	{
+		int q = 0;
+		int r = 0;
+		
+		q = 0;
+		r = 0;
+		
+		while(q * 10 < num)
+			q = q + 1;
+		
+		if(num == q * 10)
+			return 0;
+		
+		q = q - 1;
+		
+		return num - q * 10;
+	}
+}

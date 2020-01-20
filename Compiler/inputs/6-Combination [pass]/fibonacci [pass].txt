@@ -1,0 +1,26 @@
+class Program{
+	static void _main(){
+		int first;
+		int sec;
+		int fibonacci;
+		int num;
+		
+		num = 7;
+		
+		if(num < 3)
+			fibonacci = 1;
+		else{
+			first = 1;
+			sec = 1;
+			
+			for(i in 1 to num - 2 steps 1){
+				fibonacci = first + sec;
+				
+				first = sec;
+				sec = fibonacci;
+			}
+		}
+		
+		print("{fibonacci}");
+	}
+}

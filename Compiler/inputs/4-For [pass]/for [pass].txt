@@ -1,0 +1,13 @@
+class Program{
+	static void _main(){
+		int n;
+		
+		n = 0;
+		
+		for(counter in 1 to 3 steps 1)
+			for(i in 3 - 2 to 2 * 8 steps 2)
+				n = n + i * 3;
+		
+		print("{n}");
+	}
+}

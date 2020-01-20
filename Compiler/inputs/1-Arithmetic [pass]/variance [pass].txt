@@ -1,0 +1,30 @@
+class Program{
+	static void _main(){
+		real number1, number2, number3, number4, number5;
+		real average;
+		real variance_;
+		real error_1, error_2, error_3, error_4, error_5;
+		
+		number1 = 1;
+		number2 = 2;
+		number3 = 3;
+		number4 = 4;
+		number5 = 5;
+		
+		average = (number1 + number2 + number3 + number4 + number5) / 5;
+		
+		error_1 = number1 - average;
+		error_2 = number2 - average;
+		error_3 = number3 - average;
+		error_4 = number4 - average;
+		error_5 = number5 - average;
+		
+		variance_ = (error_1 * error_1 +
+					error_2 * error_2 +
+					error_3 * error_3 +
+					error_4 * error_4 +
+					error_5 * error_5) / 5;
+		
+		print("{variance_}");
+	}
+}

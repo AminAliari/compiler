@@ -1,0 +1,21 @@
+class Program{
+	static void _main(){
+		int n;
+		
+		n = 24;
+		
+		if(n >= 24 && (false || true)){
+			if(n == 32){
+				n = 3;
+			}elseif(n == 44){
+				n = 4;
+			}elseif(n == 60){
+				n = 5;
+			}else n = 6;
+		}else{
+			n = 0;
+		}
+		
+		print("{n}");
+	}
+}
