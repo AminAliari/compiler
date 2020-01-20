@@ -1,5 +1,5 @@
 # Compiler
-final project for Compiler design Course at Amirkabir University of Technology (polytechnic)
+Java-like language compiler for Compiler design course at Amirkabir University of Technology (polytechnic)
 
 ## Technologies
 - Lex (Lexical analyser)
