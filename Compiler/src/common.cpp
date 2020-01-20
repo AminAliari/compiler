@@ -903,6 +903,7 @@ void Code_For()
 	auto for_entry = new QuadEntry{};
 	for_entry->id = CURRENT_TABLE_COUNT;
 	for_entry->type = QuadEntryTypeEnum::FOR_EXP;
+	auto check_label = Util_GetNewLabel();
 	auto start_label = Util_GetNewLabel();
 	auto end_label = Util_GetNewLabel();
 
@@ -918,14 +919,14 @@ void Code_For()
 	DeclList_Add(counter_var, TypeEnum::REAL);
 
 	for_entry->code = counter_var + " = " + counter_var + " + " + steps + ";\n\t"
-		+ "if ( " + counter_var + " < " + end_range + " ) goto " + start_label + ";\n\t"
-		+ "goto " + end_label + ";\n\t"
+		+ "goto " + check_label + ";\n\t"
 		+ end_label + ": ";
 
 	// end
 	auto end_entry = g.quad_table[ending_entry->quad_index];
 	end_entry->code =
-		+"if ( " + counter_var + " < " + end_range + " ) goto " + start_label + ";\n\t"
+		check_label + ": "
+		+ "if ( " + counter_var + " < " + end_range + " ) goto " + start_label + ";\n\t"
 		+ "goto " + end_label + ";\n\t"
 		+ start_label + ": "
 		+ end_entry->code;
