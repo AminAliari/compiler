@@ -77,20 +77,21 @@ __output__:
 ```c
 #include <stdio.h>
 #include <stdlib.h>
+
 #define STACK_MAX 1000
+
+#define PUSH(T0) --stack_top;\
+*stack_top = T0
+#define POP() *stack_top;\
+++stack_top;
+
+#define PUSH_LABEL(L0) --labels_top;\
+*labels_top = &&L0
+#define POP_LABEL() *labels_top;\
+++labels_top;
 
 int main()
 {
-	#define PUSH(T0) --stack_top;\
-	*stack_top = T0
-	#define POP() *stack_top;\
-	++stack_top;
-
-	#define PUSH_LABEL(L0) --labels_top;\
-	*labels_top = &&L0
-	#define POP_LABEL() *labels_top;\
-	++labels_top;
-
 	void * ret_address;
 	double * stack_top = (double*) malloc(STACK_MAX * sizeof(double));
 	stack_top += STACK_MAX;
@@ -119,16 +120,12 @@ int main()
 	int T11 = 0;
 	// ----------- end of declerations ----------- 
 
-	_main: 
-	
-	
-
+	_main:
 	num = 5523;
 	PUSH_LABEL( L0 );
 	
 	// store program state
 	PUSH( num );
-	
 	
 	// push args
 	PUSH( num );
@@ -144,11 +141,9 @@ int main()
 	num = ( int )T0;
 	printf("%d\n", num);
 	goto end;
+	
 	getPalindrome: 
 	num = POP();
-	
-	
-
 	pal = 0;
 	L4: 
 	if ( num >= 1 ) goto L1;
@@ -188,11 +183,9 @@ int main()
 	L2: ret_address = POP_LABEL();
 	PUSH( pal );
 	goto *ret_address;
+	
 	getUnit: 
 	num = POP();
-	
-	
-
 	q = 0;
 	r = 0;
 	L7: T6 = q * 10;
@@ -232,50 +225,50 @@ int main()
 program : macros classes
 
 macros : macros macro 
-		| /* lambda */
+       | /* lambda */
 
 macro : reference 
 
 reference : REFERENCE STRING
 classes : classes class
-		| /* lambda */
+        | /* lambda */
 
 class : CLASS ID LCB symbol_decs RCB
 
 symbol_decs : symbol_decs symbol_dec
-			| /* lambda */
+	    | /* lambda */
 
 symbol_dec : var_dec
-			| func_dec
+	   | func_dec
 
 var_dec : var_type var_list SEMICOLON
 
 var_type : return_type
-			| STATIC return_type
+	 | STATIC return_type
 
 return_type : INT_TYPE
-			| REAL_TYPE
-			| BOOL_TYPE
-			| STRING_TYPE
-			| ID
+	     | REAL_TYPE
+	     | BOOL_TYPE
+	     | STRING_TYPE
+	     | ID
 
 var_list : var_list COMMA var_list_item
-			| var_list_item
+	 | var_list_item
 
 var_list_item : ID 
-				| ID ASSIGNMENT exp 
+	      | ID ASSIGNMENT exp 
 
 func_dec : var_type func_body
-			| VOID func_body
-			| STATIC VOID func_body
+	 | VOID func_body
+	 | STATIC VOID func_body
 
 func_body : ID LP formal_arguments RP block
 
 formal_arguments : formal_arguments_list
-				 | /* lambda */
+		 | /* lambda */
 
 formal_arguments_list : formal_arguments_list COMMA formal_argument
-						| formal_argument
+			| formal_argument
 
 formal_argument : return_type ID 
 
@@ -283,7 +276,7 @@ block : LCB statements_list RCB
 		| statement
 
 statements_list : statements_list statement
-				| /* lambda */
+		| /* lambda */
 
 statement : SEMICOLON
 			| exp SEMICOLON
@@ -342,12 +335,12 @@ exp : INT
 	| LP exp RP
 	| function_call
 
-binary_operation :  exp PLUS exp { print("binary_operation : exp + exp");
+binary_operation :  exp PLUS exp
 					| exp MINUS exp { print("binary_operation : exp - exp");
-					| exp MUL exp { print("binary_operation : exp * exp");
-					| exp DIV exp { print("binary_operation : exp / exp");
-					| exp MOD exp { print("binary_operation : exp % exp");
-					| exp POW exp { print("binary_operation : exp ^ exp");
+					| exp MUL exp
+					| exp DIV exp
+					| exp MOD exp
+					| exp POW exp
 					| exp SHIFT_LEFT exp
 					| exp SHIFT_RIGHT exp
 
@@ -355,11 +348,11 @@ logical_operation : exp AND exp
 					| exp OR exp
 
 comparison_operation : exp LT exp
-						| exp LE exp
-						| exp GT exp
-						| exp GE exp
-						| exp EQ exp
-						| exp NE exp
+					 | exp LE exp
+					 | exp GT exp
+					 | exp GE exp
+					 | exp EQ exp
+					 | exp NE exp
 
 bitwise_operation : exp BITWISE_AND exp
 					| exp BITWISE_OR exp
@@ -374,10 +367,10 @@ function_call : ID function_call_body
 function_call_body: LP actual_arguments RP
 
 actual_arguments : actual_arguments_list
-					| /* lambda */
+				 | /* lambda */
 
 actual_arguments_list : actual_arguments_list COMMA exp
-						| exp
+					  | exp
 ```
 
 ---
