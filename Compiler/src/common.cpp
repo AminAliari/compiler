@@ -199,27 +199,27 @@ void Program_PrintCode()
 {
 	std::string header;
 	header.append("#include <stdio.h>\n#include <stdlib.h>\n"); // includes and defines
-	header.append("#define STACK_MAX 1000\n\n");
+	header.append("\n#define STACK_MAX 1000\n\n");
 
-	header.append("int main()\n{\n"); // main
+	header.append("#define PUSH(T0) --stack_top;\\\n" // push/pop macro
+		"*stack_top = T0\n"
+		"#define POP() *stack_top;\\\n"
+		"++stack_top;\n\n");
 
-	header.append("\t#define PUSH(T0) --stack_top;\\\n\t" // push/pop macro
-		"*stack_top = T0\n\t"
-		"#define POP() *stack_top;\\\n\t"
-		"++stack_top;\n\n\t");
+	header.append("#define PUSH_LABEL(L0) --labels_top;\\\n" // push/pop macro
+		"*labels_top = &&L0\n"
+		"#define POP_LABEL() *labels_top;\\\n"
+		"++labels_top;\n\n");
 
-	header.append("#define PUSH_LABEL(L0) --labels_top;\\\n\t" // push/pop macro
-		"*labels_top = &&L0\n\t"
-		"#define POP_LABEL() *labels_top;\\\n\t"
-		"++labels_top;\n\n\t");
+	header.append("int main()\n{\n\t"); // main
 
-	header.append("void * ret_address;\n");
+	header.append("void * ret_address;\n\t");
 
-	header.append("\tdouble * stack_top = (double*) malloc(STACK_MAX * sizeof(double));\n"); // stack
-	header.append("\tstack_top += STACK_MAX;\n\n"); // reset top
+	header.append("double * stack_top = (double*) malloc(STACK_MAX * sizeof(double));\n\t"); // stack
+	header.append("stack_top += STACK_MAX;\n\n\t"); // reset top
 
-	header.append("\tvoid** labels_top = (void **) malloc(STACK_MAX * sizeof(void *));\n"); // label stack
-	header.append("\tlabels_top += STACK_MAX;\n\n"); // reset top
+	header.append("void** labels_top = (void **) malloc(STACK_MAX * sizeof(void *));\n\t"); // label stack
+	header.append("labels_top += STACK_MAX;\n\n\t"); // reset top
 
 	std::string decls = "\t";
 	for (auto entry : g.decls)
