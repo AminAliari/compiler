@@ -1,0 +1,3747 @@
+State 170 conflicts: 1 shift/reduce
+State 174 conflicts: 1 shift/reduce
+State 175 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: macros classes
+
+    2 macros: macros macro
+    3       | ε
+
+    4 macro: reference
+
+    5 reference: REFERENCE STRING
+
+    6 classes: classes class
+    7        | ε
+
+    8 class: CLASS ID LCB symbol_decs RCB
+
+    9 symbol_decs: symbol_decs symbol_dec
+   10            | ε
+
+   11 symbol_dec: var_dec
+   12           | func_dec
+
+   13 var_dec: var_type var_list SEMICOLON
+
+   14 var_type: return_type
+   15         | STATIC return_type
+
+   16 return_type: INT_TYPE
+   17            | REAL_TYPE
+   18            | BOOL_TYPE
+   19            | STRING_TYPE
+   20            | ID
+
+   21 var_list: var_list COMMA var_list_item
+   22         | var_list_item
+
+   23 var_list_item: ID
+   24              | ID ASSIGNMENT exp
+
+   25 func_dec: var_type func_body
+   26         | VOID func_body
+   27         | STATIC VOID func_body
+
+   28 func_body: ID LP formal_arguments RP block
+
+   29 formal_arguments: formal_arguments_list
+   30                 | ε
+
+   31 formal_arguments_list: formal_arguments_list COMMA formal_argument
+   32                      | formal_argument
+
+   33 formal_argument: return_type ID
+
+   34 block: LCB statements_list RCB
+   35      | statement
+
+   36 statements_list: statements_list statement
+   37                | ε
+
+   38 statement: SEMICOLON
+   39          | exp SEMICOLON
+   40          | assignment
+   41          | print
+   42          | statement_var_dec
+   43          | if
+   44          | for
+   45          | while
+   46          | return
+   47          | break
+   48          | continue
+
+   49 assignment: lvalue ASSIGNMENT exp SEMICOLON
+
+   50 lvalue: ID
+   51       | ID DOT ID
+
+   52 print: PRINT LP STRING RP SEMICOLON
+
+   53 statement_var_dec: return_type var_list SEMICOLON
+
+   54 if: IF LP exp RP block elseif_blocks else_block
+
+   55 elseif_blocks: elseifs
+   56              | ε
+
+   57 elseifs: elseifs elseif
+   58        | elseif
+
+   59 elseif: ELSEIF LP exp RP block
+
+   60 else_block: ELSE block
+   61           | ε
+
+   62 for: FOR LP ID IN exp TO exp STEPS exp RP block
+
+   63 while: WHILE LP exp RP block
+
+   64 return: RETURN exp SEMICOLON
+
+   65 break: BREAK SEMICOLON
+
+   66 continue: CONTINUE SEMICOLON
+
+   67 exp: INT
+   68    | REAL
+   69    | TRUE
+   70    | FALSE
+   71    | STRING
+   72    | lvalue
+   73    | binary_operation
+   74    | logical_operation
+   75    | comparison_operation
+   76    | bitwise_operation
+   77    | unary_operation
+   78    | LP exp RP
+   79    | function_call
+
+   80 binary_operation: exp PLUS exp
+   81                 | exp MINUS exp
+   82                 | exp MUL exp
+   83                 | exp DIV exp
+   84                 | exp MOD exp
+   85                 | exp POW exp
+   86                 | exp SHIFT_LEFT exp
+   87                 | exp SHIFT_RIGHT exp
+
+   88 logical_operation: exp AND exp
+   89                  | exp OR exp
+
+   90 comparison_operation: exp LT exp
+   91                     | exp LE exp
+   92                     | exp GT exp
+   93                     | exp GE exp
+   94                     | exp EQ exp
+   95                     | exp NE exp
+
+   96 bitwise_operation: exp BITWISE_AND exp
+   97                  | exp BITWISE_OR exp
+
+   98 unary_operation: MINUS exp
+   99                | NOT exp
+  100                | BITWISE_NOT exp
+
+  101 function_call: ID function_call_body
+  102              | ID DOT ID function_call_body
+
+  103 function_call_body: LP actual_arguments RP
+
+  104 actual_arguments: actual_arguments_list
+  105                 | ε
+
+  106 actual_arguments_list: actual_arguments_list COMMA exp
+  107                      | exp
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ID (258) 8 20 23 24 28 33 50 51 62 101 102
+    INT (259) 67
+    REAL (260) 68
+    STRING (261) 5 52 71
+    CLASS (262) 8
+    REFERENCE (263) 5
+    STATIC (264) 15 27
+    INT_TYPE (265) 16
+    REAL_TYPE (266) 17
+    BOOL_TYPE (267) 18
+    STRING_TYPE (268) 19
+    VOID (269) 26 27
+    TRUE (270) 69
+    FALSE (271) 70
+    PRINT (272) 52
+    RETURN (273) 64
+    BREAK (274) 65
+    CONTINUE (275) 66
+    IF (276) 54
+    ELSE (277) 60
+    ELSEIF (278) 59
+    WHILE (279) 63
+    FOR (280) 62
+    TO (281) 62
+    IN (282) 62
+    STEPS (283) 62
+    ASSIGNMENT (284) 24 49
+    OR (285) 89
+    AND (286) 88
+    BITWISE_OR (287) 97
+    BITWISE_AND (288) 96
+    EQ (289) 94
+    NE (290) 95
+    GT (291) 92
+    GE (292) 93
+    LT (293) 90
+    LE (294) 91
+    SHIFT_RIGHT (295) 87
+    SHIFT_LEFT (296) 86
+    MINUS (297) 81 98
+    PLUS (298) 80
+    DIV (299) 83
+    MUL (300) 82
+    MOD (301) 84
+    POW (302) 85
+    BITWISE_NOT (303) 100
+    NOT (304) 99
+    LCB (305) 8 34
+    RCB (306) 8 34
+    LP (307) 28 52 54 59 62 63 78 103
+    RP (308) 28 52 54 59 62 63 78 103
+    DOT (309) 51 102
+    SEMICOLON (310) 13 38 39 49 52 53 64 65 66
+    COMMA (311) 21 31 106
+
+
+Nonterminals, with rules where they appear
+
+    $accept (57)
+        on left: 0
+    program (58)
+        on left: 1
+        on right: 0
+    macros (59)
+        on left: 2 3
+        on right: 1 2
+    macro (60)
+        on left: 4
+        on right: 2
+    reference (61)
+        on left: 5
+        on right: 4
+    classes (62)
+        on left: 6 7
+        on right: 1 6
+    class (63)
+        on left: 8
+        on right: 6
+    symbol_decs (64)
+        on left: 9 10
+        on right: 8 9
+    symbol_dec (65)
+        on left: 11 12
+        on right: 9
+    var_dec (66)
+        on left: 13
+        on right: 11
+    var_type (67)
+        on left: 14 15
+        on right: 13 25
+    return_type (68)
+        on left: 16 17 18 19 20
+        on right: 14 15 33 53
+    var_list (69)
+        on left: 21 22
+        on right: 13 21 53
+    var_list_item (70)
+        on left: 23 24
+        on right: 21 22
+    func_dec (71)
+        on left: 25 26 27
+        on right: 12
+    func_body (72)
+        on left: 28
+        on right: 25 26 27
+    formal_arguments (73)
+        on left: 29 30
+        on right: 28
+    formal_arguments_list (74)
+        on left: 31 32
+        on right: 29 31
+    formal_argument (75)
+        on left: 33
+        on right: 31 32
+    block (76)
+        on left: 34 35
+        on right: 28 54 59 60 62 63
+    statements_list (77)
+        on left: 36 37
+        on right: 34 36
+    statement (78)
+        on left: 38 39 40 41 42 43 44 45 46 47 48
+        on right: 35 36
+    assignment (79)
+        on left: 49
+        on right: 40
+    lvalue (80)
+        on left: 50 51
+        on right: 49 72
+    print (81)
+        on left: 52
+        on right: 41
+    statement_var_dec (82)
+        on left: 53
+        on right: 42
+    if (83)
+        on left: 54
+        on right: 43
+    elseif_blocks (84)
+        on left: 55 56
+        on right: 54
+    elseifs (85)
+        on left: 57 58
+        on right: 55 57
+    elseif (86)
+        on left: 59
+        on right: 57 58
+    else_block (87)
+        on left: 60 61
+        on right: 54
+    for (88)
+        on left: 62
+        on right: 44
+    while (89)
+        on left: 63
+        on right: 45
+    return (90)
+        on left: 64
+        on right: 46
+    break (91)
+        on left: 65
+        on right: 47
+    continue (92)
+        on left: 66
+        on right: 48
+    exp (93)
+        on left: 67 68 69 70 71 72 73 74 75 76 77 78 79
+        on right: 24 39 49 54 59 62 63 64 78 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 106 107
+    binary_operation (94)
+        on left: 80 81 82 83 84 85 86 87
+        on right: 73
+    logical_operation (95)
+        on left: 88 89
+        on right: 74
+    comparison_operation (96)
+        on left: 90 91 92 93 94 95
+        on right: 75
+    bitwise_operation (97)
+        on left: 96 97
+        on right: 76
+    unary_operation (98)
+        on left: 98 99 100
+        on right: 77
+    function_call (99)
+        on left: 101 102
+        on right: 79
+    function_call_body (100)
+        on left: 103
+        on right: 101 102
+    actual_arguments (101)
+        on left: 104 105
+        on right: 103
+    actual_arguments_list (102)
+        on left: 106 107
+        on right: 104 106
+
+
+State 0
+
+    0 $accept: • program $end
+
+    $default  reduce using rule 3 (macros)
+
+    program  go to state 1
+    macros   go to state 2
+
+
+State 1
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    1 program: macros • classes
+    2 macros: macros • macro
+
+    REFERENCE  shift, and go to state 4
+
+    $default  reduce using rule 7 (classes)
+
+    macro      go to state 5
+    reference  go to state 6
+    classes    go to state 7
+
+
+State 3
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 4
+
+    5 reference: REFERENCE • STRING
+
+    STRING  shift, and go to state 8
+
+
+State 5
+
+    2 macros: macros macro •
+
+    $default  reduce using rule 2 (macros)
+
+
+State 6
+
+    4 macro: reference •
+
+    $default  reduce using rule 4 (macro)
+
+
+State 7
+
+    1 program: macros classes •
+    6 classes: classes • class
+
+    CLASS  shift, and go to state 9
+
+    $default  reduce using rule 1 (program)
+
+    class  go to state 10
+
+
+State 8
+
+    5 reference: REFERENCE STRING •
+
+    $default  reduce using rule 5 (reference)
+
+
+State 9
+
+    8 class: CLASS • ID LCB symbol_decs RCB
+
+    ID  shift, and go to state 11
+
+
+State 10
+
+    6 classes: classes class •
+
+    $default  reduce using rule 6 (classes)
+
+
+State 11
+
+    8 class: CLASS ID • LCB symbol_decs RCB
+
+    LCB  shift, and go to state 12
+
+
+State 12
+
+    8 class: CLASS ID LCB • symbol_decs RCB
+
+    $default  reduce using rule 10 (symbol_decs)
+
+    symbol_decs  go to state 13
+
+
+State 13
+
+    8 class: CLASS ID LCB symbol_decs • RCB
+    9 symbol_decs: symbol_decs • symbol_dec
+
+    ID           shift, and go to state 14
+    STATIC       shift, and go to state 15
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    VOID         shift, and go to state 20
+    RCB          shift, and go to state 21
+
+    symbol_dec   go to state 22
+    var_dec      go to state 23
+    var_type     go to state 24
+    return_type  go to state 25
+    func_dec     go to state 26
+
+
+State 14
+
+   20 return_type: ID •
+
+    $default  reduce using rule 20 (return_type)
+
+
+State 15
+
+   15 var_type: STATIC • return_type
+   27 func_dec: STATIC • VOID func_body
+
+    ID           shift, and go to state 14
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    VOID         shift, and go to state 27
+
+    return_type  go to state 28
+
+
+State 16
+
+   16 return_type: INT_TYPE •
+
+    $default  reduce using rule 16 (return_type)
+
+
+State 17
+
+   17 return_type: REAL_TYPE •
+
+    $default  reduce using rule 17 (return_type)
+
+
+State 18
+
+   18 return_type: BOOL_TYPE •
+
+    $default  reduce using rule 18 (return_type)
+
+
+State 19
+
+   19 return_type: STRING_TYPE •
+
+    $default  reduce using rule 19 (return_type)
+
+
+State 20
+
+   26 func_dec: VOID • func_body
+
+    ID  shift, and go to state 29
+
+    func_body  go to state 30
+
+
+State 21
+
+    8 class: CLASS ID LCB symbol_decs RCB •
+
+    $default  reduce using rule 8 (class)
+
+
+State 22
+
+    9 symbol_decs: symbol_decs symbol_dec •
+
+    $default  reduce using rule 9 (symbol_decs)
+
+
+State 23
+
+   11 symbol_dec: var_dec •
+
+    $default  reduce using rule 11 (symbol_dec)
+
+
+State 24
+
+   13 var_dec: var_type • var_list SEMICOLON
+   25 func_dec: var_type • func_body
+
+    ID  shift, and go to state 31
+
+    var_list       go to state 32
+    var_list_item  go to state 33
+    func_body      go to state 34
+
+
+State 25
+
+   14 var_type: return_type •
+
+    $default  reduce using rule 14 (var_type)
+
+
+State 26
+
+   12 symbol_dec: func_dec •
+
+    $default  reduce using rule 12 (symbol_dec)
+
+
+State 27
+
+   27 func_dec: STATIC VOID • func_body
+
+    ID  shift, and go to state 29
+
+    func_body  go to state 35
+
+
+State 28
+
+   15 var_type: STATIC return_type •
+
+    $default  reduce using rule 15 (var_type)
+
+
+State 29
+
+   28 func_body: ID • LP formal_arguments RP block
+
+    LP  shift, and go to state 36
+
+
+State 30
+
+   26 func_dec: VOID func_body •
+
+    $default  reduce using rule 26 (func_dec)
+
+
+State 31
+
+   23 var_list_item: ID •
+   24              | ID • ASSIGNMENT exp
+   28 func_body: ID • LP formal_arguments RP block
+
+    ASSIGNMENT  shift, and go to state 37
+    LP          shift, and go to state 36
+
+    $default  reduce using rule 23 (var_list_item)
+
+
+State 32
+
+   13 var_dec: var_type var_list • SEMICOLON
+   21 var_list: var_list • COMMA var_list_item
+
+    SEMICOLON  shift, and go to state 38
+    COMMA      shift, and go to state 39
+
+
+State 33
+
+   22 var_list: var_list_item •
+
+    $default  reduce using rule 22 (var_list)
+
+
+State 34
+
+   25 func_dec: var_type func_body •
+
+    $default  reduce using rule 25 (func_dec)
+
+
+State 35
+
+   27 func_dec: STATIC VOID func_body •
+
+    $default  reduce using rule 27 (func_dec)
+
+
+State 36
+
+   28 func_body: ID LP • formal_arguments RP block
+
+    ID           shift, and go to state 14
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+
+    $default  reduce using rule 30 (formal_arguments)
+
+    return_type            go to state 40
+    formal_arguments       go to state 41
+    formal_arguments_list  go to state 42
+    formal_argument        go to state 43
+
+
+State 37
+
+   24 var_list_item: ID ASSIGNMENT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 55
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 38
+
+   13 var_dec: var_type var_list SEMICOLON •
+
+    $default  reduce using rule 13 (var_dec)
+
+
+State 39
+
+   21 var_list: var_list COMMA • var_list_item
+
+    ID  shift, and go to state 62
+
+    var_list_item  go to state 63
+
+
+State 40
+
+   33 formal_argument: return_type • ID
+
+    ID  shift, and go to state 64
+
+
+State 41
+
+   28 func_body: ID LP formal_arguments • RP block
+
+    RP  shift, and go to state 65
+
+
+State 42
+
+   29 formal_arguments: formal_arguments_list •
+   31 formal_arguments_list: formal_arguments_list • COMMA formal_argument
+
+    COMMA  shift, and go to state 66
+
+    $default  reduce using rule 29 (formal_arguments)
+
+
+State 43
+
+   32 formal_arguments_list: formal_argument •
+
+    $default  reduce using rule 32 (formal_arguments_list)
+
+
+State 44
+
+   50 lvalue: ID •
+   51       | ID • DOT ID
+  101 function_call: ID • function_call_body
+  102              | ID • DOT ID function_call_body
+
+    LP   shift, and go to state 67
+    DOT  shift, and go to state 68
+
+    $default  reduce using rule 50 (lvalue)
+
+    function_call_body  go to state 69
+
+
+State 45
+
+   67 exp: INT •
+
+    $default  reduce using rule 67 (exp)
+
+
+State 46
+
+   68 exp: REAL •
+
+    $default  reduce using rule 68 (exp)
+
+
+State 47
+
+   71 exp: STRING •
+
+    $default  reduce using rule 71 (exp)
+
+
+State 48
+
+   69 exp: TRUE •
+
+    $default  reduce using rule 69 (exp)
+
+
+State 49
+
+   70 exp: FALSE •
+
+    $default  reduce using rule 70 (exp)
+
+
+State 50
+
+   98 unary_operation: MINUS • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 70
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 51
+
+  100 unary_operation: BITWISE_NOT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 71
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 52
+
+   99 unary_operation: NOT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 72
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 53
+
+   78 exp: LP • exp RP
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 73
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 54
+
+   72 exp: lvalue •
+
+    $default  reduce using rule 72 (exp)
+
+
+State 55
+
+   24 var_list_item: ID ASSIGNMENT exp •
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 24 (var_list_item)
+
+
+State 56
+
+   73 exp: binary_operation •
+
+    $default  reduce using rule 73 (exp)
+
+
+State 57
+
+   74 exp: logical_operation •
+
+    $default  reduce using rule 74 (exp)
+
+
+State 58
+
+   75 exp: comparison_operation •
+
+    $default  reduce using rule 75 (exp)
+
+
+State 59
+
+   76 exp: bitwise_operation •
+
+    $default  reduce using rule 76 (exp)
+
+
+State 60
+
+   77 exp: unary_operation •
+
+    $default  reduce using rule 77 (exp)
+
+
+State 61
+
+   79 exp: function_call •
+
+    $default  reduce using rule 79 (exp)
+
+
+State 62
+
+   23 var_list_item: ID •
+   24              | ID • ASSIGNMENT exp
+
+    ASSIGNMENT  shift, and go to state 37
+
+    $default  reduce using rule 23 (var_list_item)
+
+
+State 63
+
+   21 var_list: var_list COMMA var_list_item •
+
+    $default  reduce using rule 21 (var_list)
+
+
+State 64
+
+   33 formal_argument: return_type ID •
+
+    $default  reduce using rule 33 (formal_argument)
+
+
+State 65
+
+   28 func_body: ID LP formal_arguments RP • block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 103
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 66
+
+   31 formal_arguments_list: formal_arguments_list COMMA • formal_argument
+
+    ID           shift, and go to state 14
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+
+    return_type      go to state 40
+    formal_argument  go to state 116
+
+
+State 67
+
+  103 function_call_body: LP • actual_arguments RP
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    $default  reduce using rule 105 (actual_arguments)
+
+    lvalue                 go to state 54
+    exp                    go to state 117
+    binary_operation       go to state 56
+    logical_operation      go to state 57
+    comparison_operation   go to state 58
+    bitwise_operation      go to state 59
+    unary_operation        go to state 60
+    function_call          go to state 61
+    actual_arguments       go to state 118
+    actual_arguments_list  go to state 119
+
+
+State 68
+
+   51 lvalue: ID DOT • ID
+  102 function_call: ID DOT • ID function_call_body
+
+    ID  shift, and go to state 120
+
+
+State 69
+
+  101 function_call: ID function_call_body •
+
+    $default  reduce using rule 101 (function_call)
+
+
+State 70
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+   98 unary_operation: MINUS exp •
+
+    DIV  shift, and go to state 88
+    MUL  shift, and go to state 89
+    MOD  shift, and go to state 90
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 98 (unary_operation)
+
+
+State 71
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+  100 unary_operation: BITWISE_NOT exp •
+
+    $default  reduce using rule 100 (unary_operation)
+
+
+State 72
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+   99 unary_operation: NOT exp •
+
+    $default  reduce using rule 99 (unary_operation)
+
+
+State 73
+
+   78 exp: LP exp • RP
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    RP           shift, and go to state 121
+
+
+State 74
+
+   89 logical_operation: exp OR • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 122
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 75
+
+   88 logical_operation: exp AND • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 123
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 76
+
+   97 bitwise_operation: exp BITWISE_OR • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 124
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 77
+
+   96 bitwise_operation: exp BITWISE_AND • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 125
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 78
+
+   94 comparison_operation: exp EQ • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 126
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 79
+
+   95 comparison_operation: exp NE • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 127
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 80
+
+   92 comparison_operation: exp GT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 128
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 81
+
+   93 comparison_operation: exp GE • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 129
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 82
+
+   90 comparison_operation: exp LT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 130
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 83
+
+   91 comparison_operation: exp LE • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 131
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 84
+
+   87 binary_operation: exp SHIFT_RIGHT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 132
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 85
+
+   86 binary_operation: exp SHIFT_LEFT • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 133
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 86
+
+   81 binary_operation: exp MINUS • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 134
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 87
+
+   80 binary_operation: exp PLUS • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 135
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 88
+
+   83 binary_operation: exp DIV • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 136
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 89
+
+   82 binary_operation: exp MUL • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 137
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 90
+
+   84 binary_operation: exp MOD • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 138
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 91
+
+   85 binary_operation: exp POW • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 139
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 92
+
+   20 return_type: ID •
+   50 lvalue: ID •
+   51       | ID • DOT ID
+  101 function_call: ID • function_call_body
+  102              | ID • DOT ID function_call_body
+
+    LP   shift, and go to state 67
+    DOT  shift, and go to state 68
+
+    ID        reduce using rule 20 (return_type)
+    $default  reduce using rule 50 (lvalue)
+
+    function_call_body  go to state 69
+
+
+State 93
+
+   52 print: PRINT • LP STRING RP SEMICOLON
+
+    LP  shift, and go to state 140
+
+
+State 94
+
+   64 return: RETURN • exp SEMICOLON
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 141
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 95
+
+   65 break: BREAK • SEMICOLON
+
+    SEMICOLON  shift, and go to state 142
+
+
+State 96
+
+   66 continue: CONTINUE • SEMICOLON
+
+    SEMICOLON  shift, and go to state 143
+
+
+State 97
+
+   54 if: IF • LP exp RP block elseif_blocks else_block
+
+    LP  shift, and go to state 144
+
+
+State 98
+
+   63 while: WHILE • LP exp RP block
+
+    LP  shift, and go to state 145
+
+
+State 99
+
+   62 for: FOR • LP ID IN exp TO exp STEPS exp RP block
+
+    LP  shift, and go to state 146
+
+
+State 100
+
+   34 block: LCB • statements_list RCB
+
+    $default  reduce using rule 37 (statements_list)
+
+    statements_list  go to state 147
+
+
+State 101
+
+   38 statement: SEMICOLON •
+
+    $default  reduce using rule 38 (statement)
+
+
+State 102
+
+   53 statement_var_dec: return_type • var_list SEMICOLON
+
+    ID  shift, and go to state 62
+
+    var_list       go to state 148
+    var_list_item  go to state 33
+
+
+State 103
+
+   28 func_body: ID LP formal_arguments RP block •
+
+    $default  reduce using rule 28 (func_body)
+
+
+State 104
+
+   35 block: statement •
+
+    $default  reduce using rule 35 (block)
+
+
+State 105
+
+   40 statement: assignment •
+
+    $default  reduce using rule 40 (statement)
+
+
+State 106
+
+   49 assignment: lvalue • ASSIGNMENT exp SEMICOLON
+   72 exp: lvalue •
+
+    ASSIGNMENT  shift, and go to state 149
+
+    $default  reduce using rule 72 (exp)
+
+
+State 107
+
+   41 statement: print •
+
+    $default  reduce using rule 41 (statement)
+
+
+State 108
+
+   42 statement: statement_var_dec •
+
+    $default  reduce using rule 42 (statement)
+
+
+State 109
+
+   43 statement: if •
+
+    $default  reduce using rule 43 (statement)
+
+
+State 110
+
+   44 statement: for •
+
+    $default  reduce using rule 44 (statement)
+
+
+State 111
+
+   45 statement: while •
+
+    $default  reduce using rule 45 (statement)
+
+
+State 112
+
+   46 statement: return •
+
+    $default  reduce using rule 46 (statement)
+
+
+State 113
+
+   47 statement: break •
+
+    $default  reduce using rule 47 (statement)
+
+
+State 114
+
+   48 statement: continue •
+
+    $default  reduce using rule 48 (statement)
+
+
+State 115
+
+   39 statement: exp • SEMICOLON
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    SEMICOLON    shift, and go to state 150
+
+
+State 116
+
+   31 formal_arguments_list: formal_arguments_list COMMA formal_argument •
+
+    $default  reduce using rule 31 (formal_arguments_list)
+
+
+State 117
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+  107 actual_arguments_list: exp •
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 107 (actual_arguments_list)
+
+
+State 118
+
+  103 function_call_body: LP actual_arguments • RP
+
+    RP  shift, and go to state 151
+
+
+State 119
+
+  104 actual_arguments: actual_arguments_list •
+  106 actual_arguments_list: actual_arguments_list • COMMA exp
+
+    COMMA  shift, and go to state 152
+
+    $default  reduce using rule 104 (actual_arguments)
+
+
+State 120
+
+   51 lvalue: ID DOT ID •
+  102 function_call: ID DOT ID • function_call_body
+
+    LP  shift, and go to state 67
+
+    $default  reduce using rule 51 (lvalue)
+
+    function_call_body  go to state 153
+
+
+State 121
+
+   78 exp: LP exp RP •
+
+    $default  reduce using rule 78 (exp)
+
+
+State 122
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   89                  | exp OR exp •
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 89 (logical_operation)
+
+
+State 123
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   88                  | exp AND exp •
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 88 (logical_operation)
+
+
+State 124
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+   97                  | exp BITWISE_OR exp •
+
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 97 (bitwise_operation)
+
+
+State 125
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   96                  | exp BITWISE_AND exp •
+   97                  | exp • BITWISE_OR exp
+
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 96 (bitwise_operation)
+
+
+State 126
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   94                     | exp EQ exp •
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 94 (comparison_operation)
+
+
+State 127
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   95                     | exp NE exp •
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 95 (comparison_operation)
+
+
+State 128
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   92                     | exp GT exp •
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 92 (comparison_operation)
+
+
+State 129
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   93                     | exp GE exp •
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 93 (comparison_operation)
+
+
+State 130
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   90                     | exp LT exp •
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 90 (comparison_operation)
+
+
+State 131
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   91                     | exp LE exp •
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 91 (comparison_operation)
+
+
+State 132
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   87                 | exp SHIFT_RIGHT exp •
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    SHIFT_LEFT  shift, and go to state 85
+    MINUS       shift, and go to state 86
+    PLUS        shift, and go to state 87
+    DIV         shift, and go to state 88
+    MUL         shift, and go to state 89
+    MOD         shift, and go to state 90
+    POW         shift, and go to state 91
+
+    $default  reduce using rule 87 (binary_operation)
+
+
+State 133
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   86                 | exp SHIFT_LEFT exp •
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    MINUS  shift, and go to state 86
+    PLUS   shift, and go to state 87
+    DIV    shift, and go to state 88
+    MUL    shift, and go to state 89
+    MOD    shift, and go to state 90
+    POW    shift, and go to state 91
+
+    $default  reduce using rule 86 (binary_operation)
+
+
+State 134
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   81                 | exp MINUS exp •
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    DIV  shift, and go to state 88
+    MUL  shift, and go to state 89
+    MOD  shift, and go to state 90
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 81 (binary_operation)
+
+
+State 135
+
+   80 binary_operation: exp • PLUS exp
+   80                 | exp PLUS exp •
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    DIV  shift, and go to state 88
+    MUL  shift, and go to state 89
+    MOD  shift, and go to state 90
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 80 (binary_operation)
+
+
+State 136
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   83                 | exp DIV exp •
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 83 (binary_operation)
+
+
+State 137
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   82                 | exp MUL exp •
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 82 (binary_operation)
+
+
+State 138
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   84                 | exp MOD exp •
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    POW  shift, and go to state 91
+
+    $default  reduce using rule 84 (binary_operation)
+
+
+State 139
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   85                 | exp POW exp •
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    $default  reduce using rule 85 (binary_operation)
+
+
+State 140
+
+   52 print: PRINT LP • STRING RP SEMICOLON
+
+    STRING  shift, and go to state 154
+
+
+State 141
+
+   64 return: RETURN exp • SEMICOLON
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    SEMICOLON    shift, and go to state 155
+
+
+State 142
+
+   65 break: BREAK SEMICOLON •
+
+    $default  reduce using rule 65 (break)
+
+
+State 143
+
+   66 continue: CONTINUE SEMICOLON •
+
+    $default  reduce using rule 66 (continue)
+
+
+State 144
+
+   54 if: IF LP • exp RP block elseif_blocks else_block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 156
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 145
+
+   63 while: WHILE LP • exp RP block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 157
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 146
+
+   62 for: FOR LP • ID IN exp TO exp STEPS exp RP block
+
+    ID  shift, and go to state 158
+
+
+State 147
+
+   34 block: LCB statements_list • RCB
+   36 statements_list: statements_list • statement
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    RCB          shift, and go to state 159
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    statement             go to state 160
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 148
+
+   21 var_list: var_list • COMMA var_list_item
+   53 statement_var_dec: return_type var_list • SEMICOLON
+
+    SEMICOLON  shift, and go to state 161
+    COMMA      shift, and go to state 39
+
+
+State 149
+
+   49 assignment: lvalue ASSIGNMENT • exp SEMICOLON
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 162
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 150
+
+   39 statement: exp SEMICOLON •
+
+    $default  reduce using rule 39 (statement)
+
+
+State 151
+
+  103 function_call_body: LP actual_arguments RP •
+
+    $default  reduce using rule 103 (function_call_body)
+
+
+State 152
+
+  106 actual_arguments_list: actual_arguments_list COMMA • exp
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 163
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 153
+
+  102 function_call: ID DOT ID function_call_body •
+
+    $default  reduce using rule 102 (function_call)
+
+
+State 154
+
+   52 print: PRINT LP STRING • RP SEMICOLON
+
+    RP  shift, and go to state 164
+
+
+State 155
+
+   64 return: RETURN exp SEMICOLON •
+
+    $default  reduce using rule 64 (return)
+
+
+State 156
+
+   54 if: IF LP exp • RP block elseif_blocks else_block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    RP           shift, and go to state 165
+
+
+State 157
+
+   63 while: WHILE LP exp • RP block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    RP           shift, and go to state 166
+
+
+State 158
+
+   62 for: FOR LP ID • IN exp TO exp STEPS exp RP block
+
+    IN  shift, and go to state 167
+
+
+State 159
+
+   34 block: LCB statements_list RCB •
+
+    $default  reduce using rule 34 (block)
+
+
+State 160
+
+   36 statements_list: statements_list statement •
+
+    $default  reduce using rule 36 (statements_list)
+
+
+State 161
+
+   53 statement_var_dec: return_type var_list SEMICOLON •
+
+    $default  reduce using rule 53 (statement_var_dec)
+
+
+State 162
+
+   49 assignment: lvalue ASSIGNMENT exp • SEMICOLON
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    SEMICOLON    shift, and go to state 168
+
+
+State 163
+
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+  106 actual_arguments_list: actual_arguments_list COMMA exp •
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+    $default  reduce using rule 106 (actual_arguments_list)
+
+
+State 164
+
+   52 print: PRINT LP STRING RP • SEMICOLON
+
+    SEMICOLON  shift, and go to state 169
+
+
+State 165
+
+   54 if: IF LP exp RP • block elseif_blocks else_block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 170
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 166
+
+   63 while: WHILE LP exp RP • block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 171
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 167
+
+   62 for: FOR LP ID IN • exp TO exp STEPS exp RP block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 172
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 168
+
+   49 assignment: lvalue ASSIGNMENT exp SEMICOLON •
+
+    $default  reduce using rule 49 (assignment)
+
+
+State 169
+
+   52 print: PRINT LP STRING RP SEMICOLON •
+
+    $default  reduce using rule 52 (print)
+
+
+State 170
+
+   54 if: IF LP exp RP block • elseif_blocks else_block
+
+    ELSEIF  shift, and go to state 173
+
+    ELSEIF    [reduce using rule 56 (elseif_blocks)]
+    $default  reduce using rule 56 (elseif_blocks)
+
+    elseif_blocks  go to state 174
+    elseifs        go to state 175
+    elseif         go to state 176
+
+
+State 171
+
+   63 while: WHILE LP exp RP block •
+
+    $default  reduce using rule 63 (while)
+
+
+State 172
+
+   62 for: FOR LP ID IN exp • TO exp STEPS exp RP block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    TO           shift, and go to state 177
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+
+State 173
+
+   59 elseif: ELSEIF • LP exp RP block
+
+    LP  shift, and go to state 178
+
+
+State 174
+
+   54 if: IF LP exp RP block elseif_blocks • else_block
+
+    ELSE  shift, and go to state 179
+
+    ELSE      [reduce using rule 61 (else_block)]
+    $default  reduce using rule 61 (else_block)
+
+    else_block  go to state 180
+
+
+State 175
+
+   55 elseif_blocks: elseifs •
+   57 elseifs: elseifs • elseif
+
+    ELSEIF  shift, and go to state 173
+
+    ELSEIF    [reduce using rule 55 (elseif_blocks)]
+    $default  reduce using rule 55 (elseif_blocks)
+
+    elseif  go to state 181
+
+
+State 176
+
+   58 elseifs: elseif •
+
+    $default  reduce using rule 58 (elseifs)
+
+
+State 177
+
+   62 for: FOR LP ID IN exp TO • exp STEPS exp RP block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 182
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 178
+
+   59 elseif: ELSEIF LP • exp RP block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 183
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 179
+
+   60 else_block: ELSE • block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 184
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 180
+
+   54 if: IF LP exp RP block elseif_blocks else_block •
+
+    $default  reduce using rule 54 (if)
+
+
+State 181
+
+   57 elseifs: elseifs elseif •
+
+    $default  reduce using rule 57 (elseifs)
+
+
+State 182
+
+   62 for: FOR LP ID IN exp TO exp • STEPS exp RP block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    STEPS        shift, and go to state 185
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+
+
+State 183
+
+   59 elseif: ELSEIF LP exp • RP block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    RP           shift, and go to state 186
+
+
+State 184
+
+   60 else_block: ELSE block •
+
+    $default  reduce using rule 60 (else_block)
+
+
+State 185
+
+   62 for: FOR LP ID IN exp TO exp STEPS • exp RP block
+
+    ID           shift, and go to state 44
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LP           shift, and go to state 53
+
+    lvalue                go to state 54
+    exp                   go to state 187
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 186
+
+   59 elseif: ELSEIF LP exp RP • block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 188
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 187
+
+   62 for: FOR LP ID IN exp TO exp STEPS exp • RP block
+   80 binary_operation: exp • PLUS exp
+   81                 | exp • MINUS exp
+   82                 | exp • MUL exp
+   83                 | exp • DIV exp
+   84                 | exp • MOD exp
+   85                 | exp • POW exp
+   86                 | exp • SHIFT_LEFT exp
+   87                 | exp • SHIFT_RIGHT exp
+   88 logical_operation: exp • AND exp
+   89                  | exp • OR exp
+   90 comparison_operation: exp • LT exp
+   91                     | exp • LE exp
+   92                     | exp • GT exp
+   93                     | exp • GE exp
+   94                     | exp • EQ exp
+   95                     | exp • NE exp
+   96 bitwise_operation: exp • BITWISE_AND exp
+   97                  | exp • BITWISE_OR exp
+
+    OR           shift, and go to state 74
+    AND          shift, and go to state 75
+    BITWISE_OR   shift, and go to state 76
+    BITWISE_AND  shift, and go to state 77
+    EQ           shift, and go to state 78
+    NE           shift, and go to state 79
+    GT           shift, and go to state 80
+    GE           shift, and go to state 81
+    LT           shift, and go to state 82
+    LE           shift, and go to state 83
+    SHIFT_RIGHT  shift, and go to state 84
+    SHIFT_LEFT   shift, and go to state 85
+    MINUS        shift, and go to state 86
+    PLUS         shift, and go to state 87
+    DIV          shift, and go to state 88
+    MUL          shift, and go to state 89
+    MOD          shift, and go to state 90
+    POW          shift, and go to state 91
+    RP           shift, and go to state 189
+
+
+State 188
+
+   59 elseif: ELSEIF LP exp RP block •
+
+    $default  reduce using rule 59 (elseif)
+
+
+State 189
+
+   62 for: FOR LP ID IN exp TO exp STEPS exp RP • block
+
+    ID           shift, and go to state 92
+    INT          shift, and go to state 45
+    REAL         shift, and go to state 46
+    STRING       shift, and go to state 47
+    INT_TYPE     shift, and go to state 16
+    REAL_TYPE    shift, and go to state 17
+    BOOL_TYPE    shift, and go to state 18
+    STRING_TYPE  shift, and go to state 19
+    TRUE         shift, and go to state 48
+    FALSE        shift, and go to state 49
+    PRINT        shift, and go to state 93
+    RETURN       shift, and go to state 94
+    BREAK        shift, and go to state 95
+    CONTINUE     shift, and go to state 96
+    IF           shift, and go to state 97
+    WHILE        shift, and go to state 98
+    FOR          shift, and go to state 99
+    MINUS        shift, and go to state 50
+    BITWISE_NOT  shift, and go to state 51
+    NOT          shift, and go to state 52
+    LCB          shift, and go to state 100
+    LP           shift, and go to state 53
+    SEMICOLON    shift, and go to state 101
+
+    return_type           go to state 102
+    block                 go to state 190
+    statement             go to state 104
+    assignment            go to state 105
+    lvalue                go to state 106
+    print                 go to state 107
+    statement_var_dec     go to state 108
+    if                    go to state 109
+    for                   go to state 110
+    while                 go to state 111
+    return                go to state 112
+    break                 go to state 113
+    continue              go to state 114
+    exp                   go to state 115
+    binary_operation      go to state 56
+    logical_operation     go to state 57
+    comparison_operation  go to state 58
+    bitwise_operation     go to state 59
+    unary_operation       go to state 60
+    function_call         go to state 61
+
+
+State 190
+
+   62 for: FOR LP ID IN exp TO exp STEPS exp RP block •
+
+    $default  reduce using rule 62 (for)
