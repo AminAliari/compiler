@@ -1,0 +1,8 @@
+class Program
+{
+	static void _main()
+	{
+		int a = 1;
+		a = a @ 2;
+	}
+}

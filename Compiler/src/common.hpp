@@ -6,6 +6,7 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #define MT_EMPTY_ARG ""
 #define MT_TRUE_VALUE "true"
@@ -39,6 +40,8 @@ enum class QuadEntryTypeEnum
 	RETURN_EXP,
 	FUNC_CALL,
 	PRINT_EXP,
+	BREAK_EXP,
+	CONTINUE_EXP,
 };
 
 enum class OpEnum
@@ -126,6 +129,7 @@ struct Global
 
 	std::stack<StackEntry *> stack;
 	std::vector<DeclEntry *> decls;
+	std::unordered_map<std::string, DeclEntry *> decls_by_id;
 	std::vector<QuadEntry *> quad_table;
 };
 
@@ -150,6 +154,7 @@ int Util_GetQuadEntryIndex(QuadEntry * entry);
 void Program_Initialize();
 Global & Program_GetGlobal();
 void Program_PrintCode();
+void Program_Shutdown();
 
 // ------- Quad Table ------ //
 QuadEntry * QuadTable_AddEntry(QuadEntry * entry);
@@ -204,3 +209,5 @@ void Code_Return();
 
 void Code_AddPrint(std::string text);
 void Code_Print(QuadEntry * entry);
+void Code_Break();
+void Code_Continue();
