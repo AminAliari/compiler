@@ -11,16 +11,18 @@ Java-like language compiler for Compiler design course at Amirkabir University o
 ---
 
 ## How to build
-just run this bat file.
+Run:
 ```
 win-make-vs2019.bat
 ```
+`build-flex.bat` now uses local `bison`/`flex` from PATH when vendored Windows binaries are not present.
 
 ---
 
 ## Example code
 output code is in __C__, and has to compile with __GCC__.
 you can find more examples [here.](https://github.com/AminAliari/Compiler/tree/master/Compiler/inputs)
+Negative/failure samples are available under `Compiler/inputs/7-Negative [fail]/`.
 
 __input__:
 ```java

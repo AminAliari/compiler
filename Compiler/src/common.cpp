@@ -1,10 +1,20 @@
 #include "common.hpp"
 
 #include <Windows.h>
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <unordered_set>
 
 // ------- Globals ------ //
 Global * global = new Global{};
 Global & g = *global;
+
+static void FatalError(const char * message)
+{
+	fprintf(stderr, "[compiler error]: %s\n", message);
+	std::exit(EXIT_FAILURE);
+}
 
 // ------- Utils ------ //
 void Util_CopyClipboard(std::string text)
@@ -66,7 +76,7 @@ std::string Util_GetTypeString(TypeEnum type)
 			return "double";
 
 		case TypeEnum::STRING:
-			return "string";
+			return "char*";
 
 		case TypeEnum::ID:
 			return "id";
@@ -77,6 +87,17 @@ std::string Util_GetTypeString(TypeEnum type)
 		default:
 			return MT_INVALID;
 	}
+}
+
+static QuadEntry * GetOrCreateEntryAt(int index)
+{
+	if (index >= 0 && index < int(g.quad_table.size()))
+		return g.quad_table[index];
+	auto entry = new QuadEntry{};
+	entry->id = CURRENT_TABLE_COUNT;
+	entry->type = QuadEntryTypeEnum::ARIMETHIC_EXP;
+	entry->code = "";
+	return QuadTable_AddEntry(entry);
 }
 std::string Util_GetTypePrintToken(TypeEnum type)
 {
@@ -172,16 +193,17 @@ std::string Util_GetTypeDefaultValue(TypeEnum type)
 		return "0";
 	else if (TypeEnum::REAL == type)
 		return "0.0";
+	else if (TypeEnum::STRING == type)
+		return "\"\"";
 
 	return MT_INVALID;
 }
 int Util_GetQuadEntryIndex(QuadEntry * entry)
 {
-	for (int i = 0; i < g.quad_table.size(); ++i)
-	{
-		if (g.quad_table[i]->id == entry->id)
-			return i;
-	}
+	if (nullptr == entry)
+		return -1;
+	if (entry->id >= 0 && entry->id < int(g.quad_table.size()) && g.quad_table[entry->id] == entry)
+		return entry->id;
 	return -1;
 }
 
@@ -201,25 +223,35 @@ void Program_PrintCode()
 	header.append("#include <stdio.h>\n#include <stdlib.h>\n"); // includes and defines
 	header.append("\n#define STACK_MAX 1000\n\n");
 
-	header.append("#define PUSH(T0) --stack_top;\\\n" // push/pop macro
-		"*stack_top = T0\n"
-		"#define POP() *stack_top;\\\n"
-		"++stack_top;\n\n");
+	header.append("#define PUSH(T0) do {\\\n" // push/pop macro
+		"if (stack_top <= stack_base) { printf(\"stack overflow\\n\"); exit(1); }\\\n"
+		"--stack_top;\\\n"
+		"*stack_top = (T0);\\\n"
+		"} while(0)\n"
+		"#define POP() (\\\n"
+		"(stack_top >= stack_limit ? (printf(\"stack underflow\\n\"), exit(1), 0.0) : *stack_top++)\\\n"
+		")\n\n");
 
-	header.append("#define PUSH_LABEL(L0) --labels_top;\\\n" // push/pop macro
-		"*labels_top = &&L0\n"
-		"#define POP_LABEL() *labels_top;\\\n"
-		"++labels_top;\n\n");
+	header.append("#define PUSH_LABEL(L0) do {\\\n" // push/pop macro
+		"if (labels_top <= labels_base) { printf(\"label stack overflow\\n\"); exit(1); }\\\n"
+		"--labels_top;\\\n"
+		"*labels_top = &&L0;\\\n"
+		"} while(0)\n"
+		"#define POP_LABEL() (\\\n"
+		"(labels_top >= labels_limit ? (printf(\"label stack underflow\\n\"), exit(1), (void*)0) : *labels_top++)\\\n"
+		")\n\n");
 
 	header.append("int main()\n{\n\t"); // main
 
 	header.append("void * ret_address;\n\t");
 
-	header.append("double * stack_top = (double*) malloc(STACK_MAX * sizeof(double));\n\t"); // stack
-	header.append("stack_top += STACK_MAX;\n\n\t"); // reset top
+	header.append("double * stack_base = (double*) malloc(STACK_MAX * sizeof(double));\n\t"); // stack
+	header.append("double * stack_top = stack_base + STACK_MAX;\n\t"); // reset top
+	header.append("double * stack_limit = stack_base + STACK_MAX;\n\n\t");
 
-	header.append("void** labels_top = (void **) malloc(STACK_MAX * sizeof(void *));\n\t"); // label stack
-	header.append("labels_top += STACK_MAX;\n\n\t"); // reset top
+	header.append("void** labels_base = (void **) malloc(STACK_MAX * sizeof(void *));\n\t"); // label stack
+	header.append("void** labels_top = labels_base + STACK_MAX;\n\t"); // reset top
+	header.append("void** labels_limit = labels_base + STACK_MAX;\n\n\t");
 
 	std::string decls = "\t";
 	for (auto entry : g.decls)
@@ -233,10 +265,14 @@ void Program_PrintCode()
 	}
 	std::string code = "\t";
 	for (auto entry : g.quad_table)
+	{
+		if (entry->code.find("@@BREAK@@") != std::string::npos || entry->code.find("@@CONTINUE@@") != std::string::npos)
+			FatalError("break/continue used outside of loop");
 		code.append(entry->code);
+	}
 
 	std::string footer;
-	footer.append("\n\tend: return 0;\n"); // main return code
+	footer.append("\n\tend:\n\tfree(stack_base);\n\tfree(labels_base);\n\treturn 0;\n"); // main return code
 	footer.append("}\n"); // end of main
 
 	std::string baked = header
@@ -247,6 +283,34 @@ void Program_PrintCode()
 		+ footer;
 	Util_CopyClipboard(baked);
 	printf("\n\n-------------------Output Code-------------------\n%s------------------------------------------------ - \n\n", baked.c_str());
+}
+void Program_Shutdown()
+{
+	while (!g.stack.empty())
+	{
+		delete g.stack.top();
+		g.stack.pop();
+	}
+	for (auto entry : g.decls)
+		delete entry;
+	g.decls.clear();
+	g.decls_by_id.clear();
+	for (auto entry : g.quad_table)
+		delete entry;
+	g.quad_table.clear();
+
+	if (nullptr != g.global_st)
+	{
+		for (auto entry : g.global_st->entries)
+			delete entry;
+		g.global_st->entries.clear();
+		delete g.global_st;
+		g.global_st = nullptr;
+	}
+	g.current_st = nullptr;
+
+	delete global;
+	global = nullptr;
 }
 
 // ------- Quad Table ------ //
@@ -264,24 +328,17 @@ void Stack_Push(StackEntry * entry)
 }
 StackEntry * Stack_Pop()
 {
-	StackEntry * ret = nullptr;
-
-	if (g.stack.size() > 0)
-	{
-		ret = g.stack.top();
-		g.stack.pop();
-	}
-
+	if (g.stack.empty())
+		FatalError("internal stack underflow");
+	StackEntry * ret = g.stack.top();
+	g.stack.pop();
 	return ret;
 }
 StackEntry * Stack_Peek()
 {
-	StackEntry * ret = nullptr;
-
-	if (g.stack.size() > 0)
-		ret = g.stack.top();
-
-	return ret;
+	if (g.stack.empty())
+		FatalError("internal stack underflow");
+	return g.stack.top();
 }
 
 // ------- Symbol Table ------ //
@@ -323,6 +380,9 @@ void SymbolTable_PopCurrent()
 
 		// free current
 		SymbolTable_Log(g.current_st);
+		for (auto entry : g.current_st->entries)
+			delete entry;
+		g.current_st->entries.clear();
 		delete g.current_st;
 		g.current_st = nullptr;
 
@@ -358,14 +418,12 @@ TableEntry * SymbolTable_Lookup(std::string name, SymbolTable * st)
 }
 void SymbolTable_Log(SymbolTable * st)
 {
-	char * buff = new char[5000];
-	sprintf(buff, "\n\n-------------------Symbol Table#%d-------------------\n", st->id);
-	sprintf(buff + strlen(buff), "%-12s%s\n", "name", "id");
+	std::string buff = "\n\n-------------------Symbol Table#" + std::to_string(st->id) + "-------------------\n";
+	buff.append("name        id\n");
 	for (auto entry : st->entries)
-		sprintf(buff + strlen(buff), "%-13s%d\n", entry->name.c_str(), entry->id);
-	sprintf(buff + strlen(buff), "----------------------------------------------------\n\n");
+		buff.append(entry->name + " " + std::to_string(entry->id) + "\n");
+	buff.append("----------------------------------------------------\n\n");
 	g.st_log.append(buff);
-	delete[] buff;
 }
 void SymbolTable_Print()
 {
@@ -392,22 +450,16 @@ DeclEntry * DeclList_Add(std::string id, TypeEnum type, std::string value, bool 
 
 		ret = new DeclEntry{ id, type, value };
 		g.decls.push_back(ret);
+		g.decls_by_id[id] = ret;
 	}
 	return ret;
 }
 DeclEntry * DeclList_Lookup(std::string id)
 {
-	DeclEntry * ret = nullptr;
-	for (auto itr = g.decls.begin(); itr != g.decls.end(); ++itr)
-	{
-		auto entry = *itr;
-		if (entry->id == id)
-		{
-			ret = entry;
-			break;
-		}
-	}
-	return ret;
+	auto itr = g.decls_by_id.find(id);
+	if (itr != g.decls_by_id.end())
+		return itr->second;
+	return nullptr;
 }
 
 // ------- Code ------ //
@@ -445,10 +497,7 @@ void Code_ArithmeticUnary(OpEnum op)
 {
 	auto arg0 = Stack_Pop();
 	if (TypeEnum::ID == arg0->type)
-	{
-		DeclList_Add(arg0->value, TypeEnum::REAL);
-		arg0->type = TypeEnum::REAL;
-	}
+		FatalError("undeclared identifier used in unary operation");
 
 	auto type = arg0->type;
 	if (Util_IsIntegerOnlyOp(op))
@@ -480,16 +529,8 @@ void Code_ArithmeticBinary(OpEnum op)
 	auto arg1 = Stack_Pop();
 	auto arg0 = Stack_Pop();
 
-	if (TypeEnum::ID == arg0->type)
-	{
-		DeclList_Add(arg0->value, TypeEnum::REAL);
-		arg0->type = TypeEnum::REAL;
-	}
-	if (TypeEnum::ID == arg1->type)
-	{
-		DeclList_Add(arg1->value, TypeEnum::REAL);
-		arg1->type = TypeEnum::REAL;
-	}
+	if (TypeEnum::ID == arg0->type || TypeEnum::ID == arg1->type)
+		FatalError("undeclared identifier used in binary operation");
 
 	auto type = arg0->type;
 	if (Util_IsIntegerOnlyOp(op))
@@ -590,7 +631,7 @@ void Code_LogicalNot()
 		+ "goto " + l1 + ";\n\t"
 		+ l0 + ": " + temp + " = 0;\n\t"
 		+ "goto " + fall_label + ";\n\t"
-		+ l1 + ": " + temp + " = 1\n\t"
+		+ l1 + ": " + temp + " = 1;\n\t"
 		+ fall_label + ": ";
 
 	entry->deps.insert(entry->deps.end(), other->deps.begin(), other->deps.end());
@@ -770,7 +811,7 @@ void Code_IF()
 		{
 			Util_FixBooleanValue(top->value);
 
-			auto entry = g.quad_table[top->quad_index];
+			auto entry = GetOrCreateEntryAt(top->quad_index);
 			auto l0 = Util_GetNewLabel();
 			auto l1 = Util_GetNewLabel();
 			entry->code = "\n\tif ( "
@@ -852,6 +893,27 @@ QuadEntry * Code_FindDependancy(QuadEntry * entry)
 
 	return entry;
 }
+
+static void ReplaceAll(std::string & text, const std::string & from, const std::string & to)
+{
+	size_t start_pos = 0;
+	while ((start_pos = text.find(from, start_pos)) != std::string::npos)
+	{
+		text.replace(start_pos, from.length(), to);
+		start_pos += to.length();
+	}
+}
+
+static void PatchLoopControls(int from_index, int to_index, const std::string & break_label, const std::string & continue_label)
+{
+	for (int i = from_index; i <= to_index && i < int(g.quad_table.size()); ++i)
+	{
+		auto & code = g.quad_table[i]->code;
+		ReplaceAll(code, "@@BREAK@@", "goto " + break_label + ";");
+		ReplaceAll(code, "@@CONTINUE@@", "goto " + continue_label + ";");
+	}
+}
+
 void Code_While()
 {
 	auto while_entry = new QuadEntry{};
@@ -868,7 +930,7 @@ void Code_While()
 	{
 		Util_FixBooleanValue(top->value);
 
-		entry = g.quad_table[top->quad_index];
+		entry = GetOrCreateEntryAt(top->quad_index);
 		name = top->value;
 		l0 = Util_GetNewLabel();
 		l1 = Util_GetNewLabel();
@@ -895,6 +957,7 @@ void Code_While()
 	int search_index = Util_GetQuadEntryIndex(entry);
 	auto begin_entry = Code_FindDependancy(g.quad_table[search_index]);
 	begin_entry->code = new_label + ": " + begin_entry->code;
+	PatchLoopControls(search_index, CURRENT_TABLE_COUNT - 1, l1, new_label);
 
 	QuadTable_AddEntry(while_entry);
 }
@@ -906,6 +969,7 @@ void Code_For()
 	auto check_label = Util_GetNewLabel();
 	auto start_label = Util_GetNewLabel();
 	auto end_label = Util_GetNewLabel();
+	auto continue_label = Util_GetNewLabel();
 
 	// info about for loop
 	std::string counter_var = Stack_Pop()->value;
@@ -918,15 +982,15 @@ void Code_For()
 
 	DeclList_Add(counter_var, TypeEnum::REAL);
 
-	for_entry->code = counter_var + " = " + counter_var + " + " + steps + ";\n\t"
+	for_entry->code = continue_label + ": " + counter_var + " = " + counter_var + " + " + steps + ";\n\t"
 		+ "goto " + check_label + ";\n\t"
 		+ end_label + ": ";
 
 	// end
-	auto end_entry = g.quad_table[ending_entry->quad_index];
+	auto end_entry = GetOrCreateEntryAt(ending_entry->quad_index);
 	end_entry->code =
 		check_label + ": "
-		+ "if ( " + counter_var + " < " + end_range + " ) goto " + start_label + ";\n\t"
+		+ "if ( ((" + steps + ") >= 0 && " + counter_var + " < " + end_range + ") || ((" + steps + ") < 0 && " + counter_var + " > " + end_range + ") ) goto " + start_label + ";\n\t"
 		+ "goto " + end_label + ";\n\t"
 		+ start_label + ": "
 		+ end_entry->code;
@@ -945,6 +1009,7 @@ void Code_For()
 			counter_var + " = " + begin_range + ";\n\t"
 			+ begin_entry->code;
 	}
+	PatchLoopControls(initial_entry->quad_index, CURRENT_TABLE_COUNT - 1, end_label, continue_label);
 
 	QuadTable_AddEntry(for_entry);
 }
@@ -1009,9 +1074,17 @@ void Code_FuncCall()
 	std::string decls = "";
 	std::vector<std::string> decls_id;
 	code += "\n\t// store program state\n\t";
+	std::unordered_set<std::string> visible_symbols;
+	for (auto st = g.current_st; st != nullptr; st = st->parent)
+	{
+		for (auto symbol : st->entries)
+			visible_symbols.insert(symbol->name);
+	}
 	for (auto itr = g.decls.rbegin(); itr != g.decls.rend(); ++itr)
 	{
 		auto id = (*itr)->id;
+		if (visible_symbols.find(id) == visible_symbols.end())
+			continue;
 		decls += "PUSH( " + id + " );\n\t";
 		decls_id.push_back(id);
 	}
@@ -1094,4 +1167,20 @@ void Code_Print(QuadEntry * entry)
 		print_code = "printf(\"" + token + "\\n\");\n\t";
 
 	entry->code.assign(print_code);
+}
+void Code_Break()
+{
+	auto entry = new QuadEntry{};
+	entry->id = CURRENT_TABLE_COUNT;
+	entry->type = QuadEntryTypeEnum::BREAK_EXP;
+	entry->code = "@@BREAK@@\n\t";
+	QuadTable_AddEntry(entry);
+}
+void Code_Continue()
+{
+	auto entry = new QuadEntry{};
+	entry->id = CURRENT_TABLE_COUNT;
+	entry->type = QuadEntryTypeEnum::CONTINUE_EXP;
+	entry->code = "@@CONTINUE@@\n\t";
+	QuadTable_AddEntry(entry);
 }

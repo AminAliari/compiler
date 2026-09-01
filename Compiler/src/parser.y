@@ -19,11 +19,16 @@ int yylex(void);
 void yyerror(char const * input);
 void print(char const * input);
 
-void Push_ID()
+void Push_ID(bool enforce_decl = false)
 {
 	auto id = ids.top();
 	ids.pop();
 	auto entry = DeclList_Lookup(id);
+	if (enforce_decl && nullptr == entry)
+	{
+		yyerror("undeclared identifier");
+		exit(EXIT_FAILURE);
+	}
 	auto type = nullptr == entry ? TypeEnum::ID : entry->type;
 	Stack_Push(new StackEntry{type, id});
 }
@@ -72,20 +77,13 @@ void Push_VarListItem(bool has_value)
 %left BITWISE_AND
 %left EQ
 %left NE
-%left GT
-%left GE
-%left LT
-%left LE
+%left GT GE LT LE
 %left SHIFT_RIGHT
 %left SHIFT_LEFT
-%left MINUS
-%left PLUS
-%left DIV
-%left MUL
-%left MOD
+%left MINUS PLUS
+%left DIV MUL MOD
 %left POW
-%left BITWISE_NOT
-%left NOT
+%right BITWISE_NOT NOT
 %token LCB
 %token RCB
 %token LP
@@ -125,8 +123,8 @@ var_type : return_type { print("var_type : return_type"); }
 return_type : INT_TYPE { print("return_type : INT_TYPE"); Stack_Push(new StackEntry{TypeEnum::INT, Util_GetTypeString(TypeEnum::INT)}); }
 			| REAL_TYPE { print("return_type : REAL_TYPE"); Stack_Push(new StackEntry{TypeEnum::REAL, Util_GetTypeString(TypeEnum::REAL)});}
 			| BOOL_TYPE { print("return_type : BOOL_TYPE"); Stack_Push(new StackEntry{TypeEnum::BOOL, Util_GetTypeString(TypeEnum::BOOL)});}
-			| STRING_TYPE { print("return_type : STRING_TYPE"); }
-			| ID { print("return_type : ID"); Push_ID(); }
+			| STRING_TYPE { print("return_type : STRING_TYPE"); Stack_Push(new StackEntry{TypeEnum::STRING, Util_GetTypeString(TypeEnum::STRING)}); }
+			| ID { print("return_type : ID"); Push_ID(false); }
 
 var_list : var_list COMMA var_list_item { print("var_list : var_list, var_list_item"); }
 			| var_list_item { print("var_list : var_list_item"); }
@@ -152,7 +150,7 @@ func_dec : var_type func_body { print("func_dec : func_body"); Code_FuncDecl(tru
 func_body : ID LP formal_arguments RP block
 			{
 				print("func_body : ID ( formal_arguments ) block");
-				Push_ID(); 
+				Push_ID(false); 
 			}
 
 formal_arguments : formal_arguments_list
@@ -172,7 +170,7 @@ formal_arguments_list : formal_arguments_list COMMA formal_argument { print("for
 formal_argument : return_type ID 
 				{ 
 					print("formal_argument : statements_list ID"); 
-					Push_ID(); 
+					Push_ID(false); 
 					++g.formal_argument_counter;
 				}
 
@@ -196,8 +194,8 @@ statement : SEMICOLON { print("statement : SEMICOLON"); }
 
 assignment : lvalue ASSIGNMENT exp SEMICOLON { print("assignment : lvalue = exp;"); Code_Assignment(); }
 
-lvalue : ID { print("lvalue : ID"); Push_ID(); }
-		| ID DOT ID { print("lvalue : ID.ID"); /* not supported */ }
+lvalue : ID { print("lvalue : ID"); Push_ID(true); }
+		| ID DOT ID { print("lvalue : ID.ID"); yyerror("member access assignment is not supported"); YYABORT; }
 
 print : PRINT LP STRING RP SEMICOLON { print("print : PRINT ( STRING );"); Code_AddPrint(str_data); }
 
@@ -226,15 +224,15 @@ while : WHILE LP exp RP block { print("while : WHILE ( exp ) block"); Code_While
 
 return : RETURN exp SEMICOLON { print("return : RETURN exp;"); Code_Return(); }
 
-break : BREAK SEMICOLON { print("break : BREAK;"); }
+break : BREAK SEMICOLON { print("break : BREAK;"); Code_Break(); }
 
-continue : CONTINUE SEMICOLON { print("continue : CONTINUE;"); }
+continue : CONTINUE SEMICOLON { print("continue : CONTINUE;"); Code_Continue(); }
 
 exp : INT { print("exp : INT"); Stack_Push(new StackEntry{TypeEnum::INT, data});}
 	| REAL { print("exp : REAL"); Stack_Push(new StackEntry{TypeEnum::REAL, data}); }
 	| TRUE { print("exp : TRUE"); Stack_Push(new StackEntry{TypeEnum::BOOL, "true"}); }
 	| FALSE { print("exp : FALSE"); Stack_Push(new StackEntry{TypeEnum::BOOL, "false"}); }
-	| STRING { print("exp : STRING"); last_string = str_data; }
+	| STRING { print("exp : STRING"); last_string = str_data; Stack_Push(new StackEntry{TypeEnum::STRING, str_data}); }
 	| lvalue { print("exp : lvalue"); }
 	| binary_operation { print("exp : binary_operation"); }
 	| logical_operation { print("exp : logical_operation"); }
@@ -273,11 +271,11 @@ unary_operation : MINUS exp { print("unary_operation : -exp"); Code_ArithmeticUn
 function_call : ID function_call_body 
 				{ 
 					print("function_call : ID function_call_body");
-					Push_ID();
+					Push_ID(false);
 					Code_FuncCall(); 
 				}
 				
-				| ID DOT ID function_call_body{ print("function_call : ID.ID function_call_body"); /* not supported */ }
+				| ID DOT ID function_call_body{ print("function_call : ID.ID function_call_body"); yyerror("member function calls are not supported"); YYABORT; }
 
 function_call_body: LP actual_arguments RP { print("function_call_body : ( actual_arguments )"); }
 
@@ -314,6 +312,6 @@ int main()
 	else
 		printf("[error] could not read the file=input.txt\n");
 
-	getchar();
+	Program_Shutdown();
 	return 0;
 }

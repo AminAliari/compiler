@@ -9,6 +9,7 @@
 #define isatty(X) _isatty(X)
 #include "rule.hpp"
 extern "C" int yywrap ( void ) { return 1; }
+void yyerror(char const * input);
 
 std::string data;
 std::string str_data;
@@ -26,13 +27,25 @@ ws [ \t]+
 
 {ws} {}
 
-0b([1-9][0-9]*|0) {
-	data = std::to_string((int)strtol(yytext + 2, NULL, 2));
+0b[01]+ {
+	char * end = nullptr;
+	long value = strtol(yytext + 2, &end, 2);
+	if (end == nullptr || *end != '\0') {
+		yyerror("invalid binary literal");
+		exit(EXIT_FAILURE);
+	}
+	data = std::to_string((int)value);
 	return INT;
 }
 
-0x([1-9][0-9]*|0) {
-	data = std::to_string((int)strtol(yytext + 2, NULL, 16));
+0x[0-9a-fA-F]+ {
+	char * end = nullptr;
+	long value = strtol(yytext + 2, &end, 16);
+	if (end == nullptr || *end != '\0') {
+		yyerror("invalid hex literal");
+		exit(EXIT_FAILURE);
+	}
+	data = std::to_string((int)value);
 	return INT;
 }
 
@@ -138,16 +151,8 @@ steps {
 	return STEPS;
 }
 
-\& {
-	return BITWISE_AND;
-}
-
 \&& {
 	return AND;
-}
-
-\| {
-	return BITWISE_OR;
 }
 
 \|\| {
@@ -162,16 +167,12 @@ steps {
 	return BITWISE_NOT;
 }
 
-\>> {
-	return SHIFT_RIGHT;
-}
-
 \<< {
 	return SHIFT_LEFT;
 }
 
-\= {
-	return ASSIGNMENT;
+\>> {
+	return SHIFT_RIGHT;
 }
 
 \+ {
@@ -198,28 +199,40 @@ steps {
 	return POW;
 }
 
-\> {
-	return GT;
-}
-
 \>= {
 	return GE;
-}
-
-\< {
-	return LT;
 }
 
 \<= {
 	return LE;
 }
 
+\!= {
+	return NE;
+}
+
 \== {
 	return EQ;
 }
 
-\!= {
-	return NE;
+\> {
+	return GT;
+}
+
+\< {
+	return LT;
+}
+
+\& {
+	return BITWISE_AND;
+}
+
+\| {
+	return BITWISE_OR;
+}
+
+\= {
+	return ASSIGNMENT;
 }
 
 \{ {
@@ -265,6 +278,8 @@ steps {
 
 [^ \>\>=\<\<=\==\!=\&\&&\|\||\!\~\+\-\*\>>\<<\=\/\%\^\t\n\{\}\(\)\.\;\,\"]+ {
 	printf("[scanner]: error, token={%s}\n", yytext);
+	yyerror("invalid token");
+	exit(EXIT_FAILURE);
 }
 
 %%
